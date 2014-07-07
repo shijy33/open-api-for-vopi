@@ -48,7 +48,7 @@
  * echo "<br />";
  * // error handle
  * $result = $rpc_client->mul(1, 2);  // no mul function
- * if (is_a($result, "PHPRPC_Error")) {
+ * if (is_a($result, "Error")) {
  *     echo $result->toString();
  * }
  */
@@ -74,7 +74,7 @@ if (defined('KEEP_PHPRPC_COOKIE_IN_SESSION')) {
 class Error {
     var $Number;
     var $Message;
-    function PHPRPC_Error($errno, $errstr) {
+    function Error($errno, $errstr) {
         $this->Number = $errno;
         $this->Message = $errstr;
     }
@@ -255,7 +255,7 @@ class _Client {
     }
     function invoke($funcname, &$args, $byRef = false) {
         $result = $this->_key_exchange();
-        if (is_a($result, 'PHPRPC_Error')) {
+        if (is_a($result, 'Error')) {
             return $result;
         }
         $request = "phprpc_func=$funcname";
@@ -268,7 +268,7 @@ class _Client {
         }
         $request = str_replace('+', '%2B', $request);
         $result = $this->_post($request);
-        if (is_a($result, 'PHPRPC_Error')) {
+        if (is_a($result, 'Error')) {
             return $result;
         }
         $phprpc_errno = 0;
@@ -279,7 +279,7 @@ class _Client {
         if (isset($result['phprpc_errstr'])) {
             $phprpc_errstr = base64_decode($result['phprpc_errstr']);
         }
-        $this->_warning = new PHPRPC_Error($phprpc_errno, $phprpc_errstr);
+        $this->_warning = new Error($phprpc_errno, $phprpc_errstr);
         if (array_key_exists('phprpc_output', $result)) {
             $this->_output = base64_decode($result['phprpc_output']);
             if ($this->_server['version'] >= 3) {
@@ -322,7 +322,7 @@ class _Client {
             $this->_socket = @pfsockopen($host, $this->_proxy['port'], $errno, $errstr, $this->_timeout);
         }
         if ($this->_socket === false) {
-            return new PHPRPC_Error($errno, $errstr);
+            return new Error($errno, $errstr);
         }
         stream_set_write_buffer($this->_socket, 0);
         socket_set_timeout($this->_socket, $this->_timeout);
@@ -350,7 +350,7 @@ class _Client {
         $request_body = 'phprpc_id=' . $this->_clientid . '&' . $request_body;
         if ($this->_socket === false) {
             $error = $this->_connect();
-            if (is_a($error, 'PHPRPC_Error')) {
+            if (is_a($error, 'Error')) {
                 return $error;
             }
         }
@@ -397,12 +397,12 @@ class _Client {
                 $status_message = trim($match[3]);
                 if ($status != 100 && $status != 200) {
                     $this->_disconnect();
-                    return new PHPRPC_Error($status, $status_message);
+                    return new Error($status, $status_message);
                 }
             }
             else {
                 $this->_disconnect();
-                return new PHPRPC_Error(E_ERROR, "Illegal HTTP server.");
+                return new Error(E_ERROR, "Illegal HTTP server.");
             }
             $header = array();
             while (!feof($this->_socket) && (($line = fgets($this->_socket)) != "\r\n")) {
@@ -411,7 +411,7 @@ class _Client {
             }
             if ($status == 100) continue;
             $response_header = $this->_parseHeader($header);
-            if (is_a($response_header, 'PHPRPC_Error')) {
+            if (is_a($response_header, 'Error')) {
                 $this->_disconnect();
                 return $response_header;
             }
@@ -429,7 +429,7 @@ class _Client {
                 $response_body .= $this->_socket_read($chunk_size);
                 if (fgets($this->_socket) != "\r\n") {
                     $this->_disconnect();
-                    return new PHPRPC_Error(1, "Response is incorrect.");
+                    return new Error(1, "Response is incorrect.");
                 }
                 $chunk_size = (int)hexdec(fgets($this->_socket));
             }
@@ -461,7 +461,7 @@ class _Client {
             $this->_server['version'] = (float)$match[1];
         }
         else {
-            return new PHPRPC_Error(E_ERROR, "Illegal PHPRPC server.");
+            return new Error(E_ERROR, "Illegal PHPRPC server.");
         }
         if (preg_match('/text\/plain\; charset\=([^,;]*)([,;]|$)/i', $header['content-type'][0], $match)) {
             $this->_charset = $match[1];
@@ -513,7 +513,7 @@ class _Client {
         if (!is_null($this->_key) || ($this->_encryptMode == 0)) return true;
         $request = "phprpc_encrypt=true&phprpc_keylen={$this->_keylen}";
         $result = $this->_post($request);
-        if (is_a($result, 'PHPRPC_Error')) {
+        if (is_a($result, 'Error')) {
             return $result;
         }
         if (array_key_exists('phprpc_keylen', $result)) {
@@ -538,7 +538,7 @@ class _Client {
             $encrypt = bigint_num2dec(bigint_powmod(bigint_dec2num($encrypt['g']), $x, bigint_dec2num($encrypt['p'])));
             $request = "phprpc_encrypt=$encrypt";
             $result = $this->_post($request);
-            if (is_a($result, 'PHPRPC_Error')) {
+            if (is_a($result, 'Error')) {
                 return $result;
             }
         }
@@ -563,7 +563,6 @@ class _Client {
 }
 class Client extends _Client {
     function __call($function, $arguments) {
-        //return $this->invoke($function, $arguments);
-	    return $this->$function($arguments);
+        return $this->invoke($function, $arguments);
     }
 }

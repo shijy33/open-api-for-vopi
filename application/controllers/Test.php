@@ -26,4 +26,44 @@ class TestController extends Yaf\Controller_Abstract {
 		var_dump($this->getRequest());
 		return FALSE;
 	}
+
+	public function modelAction() {
+		$_model_handler = new \Resource\NumberModel();
+		var_dump($_model_handler->put());
+		return FALSE;
+	}
+
+	public function rpcAction() {
+		$server = new \Rpc\PHPRpc\Server();
+		$server->add('RegisterAccount', new TestServer());
+		$server->setCharset('UTF-8');
+		$server->setDebugMode(FALSE);
+		$server->start();
+
+		return FALSE;
+	}
+
+	public function clientAction() {
+		$rpc_client = new \Rpc\PHPRpc\Client();
+		$rpc_client->setProxy(NULL);
+		$rpc_client->useService('http://api.cu-dev.devel/test/rpc');
+		$rpc_client->setKeyLength(1024);
+		$rpc_client->setEncryptMode(3);
+
+		$result = $rpc_client->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 0, [], '史景烨', '北京', '010', '130xxxxxxxxxx');
+
+		var_dump($result);
+		return FALSE;
+	}
+}
+
+class TestServer {
+	public function RegisterAccount($_sPhoneNumber, $_sImsi, $_sIccid, $_sUserProperty, $_sService, $_sName, $_sAddress, $_sCertTypeCode, $_sCertCode) {
+
+		return [
+			'status'    =>  TRUE,
+			'code'      =>  200,
+		];
+
+	}
 }

@@ -47,6 +47,8 @@ class Api {
     public static function process($_api, $_parameters = []) {
         $_result = FALSE;
 
+	    var_dump($_api);
+
         $_process_handle = new $_api['proc_model']();
 
         $_result = $_process_handle->$_api['proc_method']($_parameters);

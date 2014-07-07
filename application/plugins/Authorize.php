@@ -9,7 +9,7 @@
  * Time    20:36
  */
 
-class ProcessPlugin extends Yaf\Plugin_Abstract {
+class AuthorizePlugin extends Yaf\Plugin_Abstract {
 
 	public function routerStartup(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
 	}

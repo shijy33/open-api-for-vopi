@@ -69,6 +69,7 @@ if (!function_exists('ob_get_clean')) {
 3. failed to work when the gz contained a comment - cannot verify.
 Returns some errors (not all!) and filename.
 */
+if (!function_exists('gzdecode')) {
 function gzdecode($data, &$filename = '', &$error = '', $maxlength = null) {
     $len = strlen($data);
     if ($len < 18 || strcmp(substr($data, 0, 2), "\x1f\x8b")) {
@@ -178,6 +179,7 @@ function gzdecode($data, &$filename = '', &$error = '', $maxlength = null) {
         return false;
     }
     return $data;
+}
 }
 
 if (version_compare(phpversion(), "5", "<")) {

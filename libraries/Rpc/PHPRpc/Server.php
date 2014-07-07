@@ -50,8 +50,9 @@
  * $server->start();
  *
  */
+namespace Rpc\PHPRpc;
 
-class PHPRPC_Server {
+class Server {
     var $callback;
     var $charset;
     var $encode;
@@ -421,12 +422,13 @@ class PHPRPC_Server {
         $this->buffer = "";
     }
     // Public Methods
-    function PHPRPC_Server() {
+    function __construct() {
         require_once('compat.php');
         $this->functions = array();
         $this->charset = 'UTF-8';
         $this->debug = false;
         $this->enableGZIP = false;
+	    $this->initSession();
     }
     function add($functions, $obj = NULL, $aliases = NULL) {
         if (is_null($functions) || (gettype($functions) != gettype($aliases) && !is_null($aliases))) {
@@ -491,6 +493,3 @@ class PHPRPC_Server {
         }
     }
 }
-
-PHPRPC_Server::initSession();
-?>
