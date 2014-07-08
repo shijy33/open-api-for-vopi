@@ -50,7 +50,7 @@
  * $server->start();
  *
  */
-namespace Rpc\PHPRpc;
+namespace Core\Rpc\PHPRpc;
 
 class Server {
     var $callback;

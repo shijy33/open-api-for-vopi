@@ -52,7 +52,7 @@
  *     echo $result->toString();
  * }
  */
-namespace Rpc\PHPRpc;
+namespace Core\Rpc\PHPRpc;
 
 $_PHPRPC_COOKIES = array();
 $_PHPRPC_COOKIE = '';
@@ -74,7 +74,8 @@ if (defined('KEEP_PHPRPC_COOKIE_IN_SESSION')) {
 class Error {
     var $Number;
     var $Message;
-    function Error($errno, $errstr) {
+
+	function __construct($errno, $errstr) {
         $this->Number = $errno;
         $this->Message = $errstr;
     }

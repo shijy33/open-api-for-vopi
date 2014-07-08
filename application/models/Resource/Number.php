@@ -13,13 +13,8 @@ class NumberModel {
 
 	public function put($_parameters = [], $_conf = []) {
 		$_result = FALSE;
-		$rpc_client = new \Rpc\PHPRpc\Client();
-		$rpc_client->setProxy(NULL);
-		$rpc_client->useService('http://www.phprpc.org/server.php');
-		$rpc_client->setKeyLength(1024);
-		$rpc_client->setEncryptMode(3);
-
-		$result = $rpc_client->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 0, [], '史景烨', '北京', '010', '130xxxxxxxxxx');
+		\Core\Rpc::add_client('http://api.cu-dev.devel/test/rpc');
+		$result = \Core\Rpc::call()->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 0, [], '史景烨', '北京', '010', '130xxxxxxxxxx');
 
 		return $_result;
 	}

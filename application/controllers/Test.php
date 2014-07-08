@@ -55,6 +55,12 @@ class TestController extends Yaf\Controller_Abstract {
 		var_dump($result);
 		return FALSE;
 	}
+
+	public function etcAction() {
+		var_dump(get_config('rpc'));
+		return FALSE;
+	}
+
 }
 
 class TestServer {

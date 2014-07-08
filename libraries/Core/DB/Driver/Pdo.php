@@ -1,5 +1,5 @@
 <?php
-namespace DB\Driver;
+namespace Core\DB\Driver;
 /**
  * PDO Database Adapter Class
  *
@@ -13,7 +13,7 @@ namespace DB\Driver;
  * @author		EllisLab Dev Team
  * @link		http://codeigniter.com/user_guide/database/
  */
-class Pdo extends \DB\Driver {
+class Pdo extends \Core\DB\Driver {
 	
 	protected $_options = [];
 	

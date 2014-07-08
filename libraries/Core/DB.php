@@ -1,4 +1,6 @@
 <?php
+namespace Core;
+
 class DB {
 	
 	protected static $_driver		= 'pdo';
@@ -19,7 +21,7 @@ class DB {
 			self::$_driver = $_config['_config']->driver;
 			
 			//connect to database
-			$_class = '\DB\Driver\\'.ucfirst(self::$_driver);
+			$_class = '\Core\DB\Driver\\'.ucfirst(self::$_driver);
 			$_options = [
 				'_config'		=>	$_config['_config'],
 				'_connect'		=>	$_config['_connect'],
