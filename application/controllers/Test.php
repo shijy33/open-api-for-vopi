@@ -34,25 +34,23 @@ class TestController extends Yaf\Controller_Abstract {
 	}
 
 	public function rpcAction() {
-		$server = new \Rpc\PHPRpc\Server();
-		$server->add('RegisterAccount', new TestServer());
+		\Core\Rpc::add_server(new TestServer());
+		\Core\Rpc::handle();
+		/*$server = new \Core\Rpc\PHPRpc\Server();
+		$server->add(new TestServer());
 		$server->setCharset('UTF-8');
 		$server->setDebugMode(FALSE);
 		$server->start();
+		*/
 
 		return FALSE;
 	}
 
 	public function clientAction() {
-		$rpc_client = new \Rpc\PHPRpc\Client();
-		$rpc_client->setProxy(NULL);
-		$rpc_client->useService('http://api.cu-dev.devel/test/rpc');
-		$rpc_client->setKeyLength(1024);
-		$rpc_client->setEncryptMode(3);
+		\Core\Rpc::add_client('http://api.cu-dev.devel/test/rpc');
+		$_result = \Core\Rpc::call()->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 0, [], '史景烨', '北京', '010', '130xxxxxxxxxx');
 
-		$result = $rpc_client->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 0, [], '史景烨', '北京', '010', '130xxxxxxxxxx');
-
-		var_dump($result);
+		var_dump($_result);
 		return FALSE;
 	}
 

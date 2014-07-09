@@ -492,4 +492,7 @@ class Server {
             $this->sendFunctions();
         }
     }
+	function handle() {
+		return $this->start();
+	}
 }

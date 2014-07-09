@@ -18,31 +18,67 @@ class Rpc {
 	public static function initialize() {
 		$_config = get_config('rpc');
 
-		self::$_driver = $_config['_config']['driver'];
+		self::$_driver = $_config->get('driver');
 
 
 	}
 
 	public static function add_client($_server_uri, $_options = []) {
+		$_result = FALSE;
 		$_client_flag = mk_rand_str(8);
 
 		$_class = '\Core\Rpc\\'. self::$_driver . '\Client';
 		self::$__client_instance[$_client_flag] = new $_class($_server_uri, $_options);
 
-		if (!is_object(self::$__client_instance[$_client_flag])) return FALSE;
-		else return $_client_flag;
+		if (is_object(self::$__client_instance[$_client_flag])) $_result = $_client_flag;
+
+		return $_result;
 	}
 
 	public static function call($_client_flag = NULL) {
-		if ($_client_flag == NULL) return reset(self::$__client_instance);
-		return self::$__client_instance[$_client_flag];
+		$_result = FALSE;
+
+		if ($_client_flag == NULL) $_result = reset(self::$__client_instance);
+		else $_result = self::$__client_instance[$_client_flag];
+
+		return $_result;
 	}
 
-	public static function add_server() {
+	public static function add_server($object, $_server_flag = NULL) {
+		$_result = FALSE;
+		$_has_instance = FALSE;
 
+		if ($_server_flag == NULL) {
+			$_server_flag = mk_rand_str(8);
+		} else {
+			$_has_instance = (array_key_exists($_server_flag, self::$__server_instance) ? TRUE : FALSE);
+		}
+
+		if ($_has_instance == FALSE) {
+			$_class = '\Core\Rpc\\'. self::$_driver . '\Server';
+			self::$__server_instance[$_server_flag] = new $_class();
+		}
+
+		if (is_object(self::$__server_instance[$_server_flag])) {
+			self::$__server_instance[$_server_flag]->add($object);
+			$_result = $_server_flag;
+		}
+
+		return $_result;
 	}
 
-	public static function handle(){
+	public static function handle($_server_flag = NULL){
+		$_result = FALSE;
 
+		if ($_server_flag == NULL) {
+			foreach (self::$__server_instance as $_server) {
+				$_server->handle();
+			}
+			$_result = TRUE;
+		} else {
+			$_result = self::$__server_instance[$_server_flag]->handle();
+		}
+
+		return $_result;
 	}
 } 

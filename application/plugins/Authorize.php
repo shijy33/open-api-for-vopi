@@ -16,10 +16,6 @@ class AuthorizePlugin extends Yaf\Plugin_Abstract {
 
 	public function routerShutdown(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
 
-		//LOG INIT START -->
-		//\LOG::init();
-		//LOG INIT END <--
-
 		//PRETREATMENT REQUEST START -->
 		if ($request->controller == 'Api') {
 			//AUTHENTICATE START -->

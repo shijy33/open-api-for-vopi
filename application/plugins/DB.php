@@ -10,9 +10,7 @@ class DBPlugin extends Yaf\Plugin_Abstract {
 	}
 	
 	public function dispatchLoopStartup(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
-		\Devel\Timespent::record('RUN1');
-		\DB::initialize(get_config('db'));
-		\Devel\Timespent::record('CONNECT');
+		\Core\DB::initialize(get_config('db'));
 	}
 	
 	public function preDispatch(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
