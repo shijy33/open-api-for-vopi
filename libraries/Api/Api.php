@@ -29,8 +29,8 @@ class Api {
 			$_result = parse_config(API_CONF_FILE_PATH);
 		}
 		
-		if ($_result != NULL && isset($_result[$_service.'/'.$_method])) {
-			$_result = $_result[$_service.'/'.$_method];
+		if ($_result != NULL && isset($_result[$_service.'/'.$_method.'?'.$_http_method])) {
+			$_result = $_result[$_service.'/'.$_method.'?'.$_http_method];
 		} else {
 			$_result = FALSE;
 		}
@@ -47,13 +47,10 @@ class Api {
     public static function process($_api, $_parameters = []) {
         $_result = FALSE;
 
-	    var_dump($_api);
-
         $_process_handle = new $_api['proc_model']();
+        $_result = $_process_handle->$_api['proc_method']($_parameters, $_api);
 
-        $_result = $_process_handle->$_api['proc_method']($_parameters);
-
-        return $_result;
+	    return $_result;
     }
 
 	/**
@@ -119,10 +116,11 @@ class Api {
     }
 
 	public static function package($_data = NULL) {
-		$_result = [
+
+
+		return $_result =
+		[
 			'data'  => $_data,
 		];
-
-		return $_result;
 	}
 }

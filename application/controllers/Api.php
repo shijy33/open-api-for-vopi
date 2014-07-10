@@ -66,8 +66,6 @@ class ApiController extends Yaf\Controller_Abstract {
 		return_package($_RETURN_PACKAGE, $_REQUEST['method']['return_type'], $_REQUEST['method']['callback']);
 		//RESULT PACKAGE END <--
 
-		var_dump(debug_backtrace());
-
 		fastcgi_finish_request();
 
 		//记录联调情况 -->
