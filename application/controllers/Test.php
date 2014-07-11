@@ -47,8 +47,19 @@ class TestController extends Yaf\Controller_Abstract {
 	}
 
 	public function clientAction() {
-		\Core\Rpc::add_client('http://api.cu-dev.devel/test/rpc');
-		$_result = \Core\Rpc::call()->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 0, [], '史景烨', '北京', '010', '130xxxxxxxxxx');
+
+		$service = [
+			[
+				['V0001'],
+				['order1'],
+				['order','targetnum','18618610010'],
+			]
+
+		];
+		//{{{"V0001"},{"order1"},{"","",""}},{{"V0016"},{"order2"},{"order3","targetnum","18618610010"}}}
+		var_dump($service);
+		\Core\Rpc::add_client('http://192.168.20.50:8080/CTC/service/1234567');
+		$_result = \Core\Rpc::call()->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 'FFFFFFFFFFFFFFFFFFFF', 'postpaid', $service, '史景烨', '北京', '010', '130xxxxxxxxxx');
 
 		var_dump($_result);
 		return FALSE;
