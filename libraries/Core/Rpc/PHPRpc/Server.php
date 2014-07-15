@@ -422,13 +422,14 @@ class Server {
         $this->buffer = "";
     }
     // Public Methods
-    function __construct() {
+    function __construct($object = NULL) {
         require_once('compat.php');
         $this->functions = array();
         $this->charset = 'UTF-8';
         $this->debug = false;
         $this->enableGZIP = false;
 	    $this->initSession();
+	    $object == NULL ? $this->add($object) : FALSE;
     }
     function add($functions, $obj = NULL, $aliases = NULL) {
         if (is_null($functions) || (gettype($functions) != gettype($aliases) && !is_null($aliases))) {

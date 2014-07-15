@@ -12,7 +12,31 @@
 class ConstPlugin extends Yaf\Plugin_Abstract {
 
 	function __construct() {
-		get_yaf_config('constant.ini','development');
+		//parse constant config
+		$_conf = get_yaf_config('constant.ini');
+
+		foreach ($_conf as $_property => $_value) {
+			define($_property, $_value);
+		}
+
+		//parse status code config
+		$_conf = get_yaf_config('message_code/message_code_config.ini','');
+		\Yaf\Registry::set('service',$_conf);
+
+		//parse app path
+		$_conf = \Yaf\Registry::get('config')->get('application')->constant;
+		define(         'API_CONF_FILE_PATH', $_conf->api_conf_file_path         );
+		define(        'APP_CONF_FILE_PATH', $_conf->app_conf_file_path        );
+		define( 'APPSECRET_CONF_FILE_PATH', $_conf->appsecret_conf_file_path );
+		define('MESSAGE_CODE_CONF_FILE_PATH', $_conf->message_code_conf_file_path);
+		define(     'SERVICE_CONF_FILE_PATH', $_conf->service_conf_file_path     );
+
+		//parse other
+		$_conf = \Yaf\Registry::get('config')->get('api');
+		$this->_app_define($_conf->application);
+		$this->_app_define($_conf->authorize  );
+
+		unset($_conf);
 	}
 
 	public function routerStartup(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
@@ -43,5 +67,9 @@ class ConstPlugin extends Yaf\Plugin_Abstract {
 
 	function __destruct() {
 		//\LOG::record();
+	}
+
+	private function _app_define($_array = []) {
+		foreach ($_array as $k => $v) define('API_'.strtoupper($k), $v);
 	}
 } 

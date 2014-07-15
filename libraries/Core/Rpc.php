@@ -10,7 +10,8 @@ namespace Core;
 
 
 class Rpc {
-	protected static $_driver		    = 'Yar';
+	protected static $_driver_client    = 'Yar';
+	protected static $_driver_server     = 'Yar';
 
 	private static $__client_instance   = [];
 	private static $__server_instance   = [];
@@ -18,16 +19,18 @@ class Rpc {
 	public static function initialize() {
 		$_config = get_config('rpc');
 
-		self::$_driver = $_config->get('driver');
+		self::$_driver_client = $_config->get('driver')->client;
+		self::$_driver_server = $_config->get('driver')->server;
 
 
 	}
 
-	public static function add_client($_server_uri, $_options = []) {
+	public static function add_client($_server_uri, $_options = [], $_client_driver = NULL) {
 		$_result = FALSE;
 		$_client_flag = mk_rand_str(8);
+		$_client_driver == NULL ? $_client_driver = self::$_driver_client : FALSE;
 
-		$_class = '\Core\Rpc\\'. self::$_driver . '\Client';
+		$_class = '\Core\Rpc\\'. $_client_driver . '\Client';
 		self::$__client_instance[$_client_flag] = new $_class($_server_uri, $_options);
 
 		if (is_object(self::$__client_instance[$_client_flag])) $_result = $_client_flag;
@@ -44,9 +47,10 @@ class Rpc {
 		return $_result;
 	}
 
-	public static function add_server($object, $_server_flag = NULL) {
+	public static function add_server($object, $_server_flag = NULL, $_server_driver = NULL) {
 		$_result = FALSE;
 		$_has_instance = FALSE;
+		$_server_driver == NULL ? $_server_driver = self::$_driver_server : FALSE;
 
 		if ($_server_flag == NULL) {
 			$_server_flag = mk_rand_str(8);
@@ -55,12 +59,8 @@ class Rpc {
 		}
 
 		if ($_has_instance == FALSE) {
-			$_class = '\Core\Rpc\\'. self::$_driver . '\Server';
-			self::$__server_instance[$_server_flag] = new $_class();
-		}
-
-		if (is_object(self::$__server_instance[$_server_flag])) {
-			self::$__server_instance[$_server_flag]->add($object);
+			$_class = '\Core\Rpc\\'. $_server_driver . '\Server';
+			self::$__server_instance[$_server_flag] = new $_class($object);
 			$_result = $_server_flag;
 		}
 

@@ -34,7 +34,7 @@ class TestController extends Yaf\Controller_Abstract {
 	}
 
 	public function rpcAction() {
-		\Core\Rpc::add_server(new TestServer());
+		\Core\Rpc::add_server(new TestServer(), NULL, 'Yar');
 		\Core\Rpc::handle();
 		/*$server = new \Core\Rpc\PHPRpc\Server();
 		$server->add(new TestServer());
@@ -57,8 +57,8 @@ class TestController extends Yaf\Controller_Abstract {
 
 		];
 		//{{{"V0001"},{"order1"},{"","",""}},{{"V0016"},{"order2"},{"order3","targetnum","18618610010"}}}
-		var_dump($service);
-		\Core\Rpc::add_client('http://192.168.20.50:8080/CTC/service/1234567');
+		//var_dump($service);
+		\Core\Rpc::add_client('http://localhost:10611/test/rpc', NULL, 'Yar');
 		$_result = \Core\Rpc::call()->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 'FFFFFFFFFFFFFFFFFFFF', 'postpaid', $service, '史景烨', '北京', '010', '130xxxxxxxxxx');
 
 		var_dump($_result);

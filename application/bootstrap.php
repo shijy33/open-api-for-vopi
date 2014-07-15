@@ -33,7 +33,7 @@ class Bootstrap extends Yaf\Bootstrap_Abstract{
 		$this->_import('Function');
 		
 		//加载预定义常量
-		$this->_import('Constant');
+		//$this->_import('Constant');
 	}
 
 	public function _initPlugin(Yaf\Dispatcher $dispatcher) {
