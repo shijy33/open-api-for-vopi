@@ -58,9 +58,10 @@ class TestController extends Yaf\Controller_Abstract {
 		];
 		//{{{"V0001"},{"order1"},{"","",""}},{{"V0016"},{"order2"},{"order3","targetnum","18618610010"}}}
 		//var_dump($service);
-		\Core\Rpc::add_client('http://localhost:10611/test/rpc', NULL, 'Yar');
-		$_result = \Core\Rpc::call()->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 'FFFFFFFFFFFFFFFFFFFF', 'postpaid', $service, '史景烨', '北京', '010', '130xxxxxxxxxx');
+		\Core\Rpc::add_client(RPC_TEST_PHPRPC_URI, NULL, 'PHPRpc');
+		//$_result = \Core\Rpc::call()->RegisterAccount('17090440005','FFFFFFFFFFFFFFFFFFF', 'FFFFFFFFFFFFFFFFFFFF', 'postpaid', $service, '史景烨', '北京', '010', '130xxxxxxxxxx');
 
+		$_result = \Core\Rpc::call()->getServiceByUser('5');
 		var_dump($_result);
 		return FALSE;
 	}
