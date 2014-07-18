@@ -33,6 +33,12 @@ class TestController extends Yaf\Controller_Abstract {
 		return FALSE;
 	}
 
+	public function envAction() {
+		phpinfo();
+
+		return FALSE;
+	}
+
 	public function rpcAction() {
 		\Core\Rpc::add_server(new TestServer(), NULL, 'Yar');
 		\Core\Rpc::handle();
