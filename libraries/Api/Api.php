@@ -2,7 +2,7 @@
 /**
  * File    libraries\VOP\Authorize.php
  * Desc    VOP API实现类文件
- * Manual  svn://svn.vop.com/api/manual/VOP/Api
+ * Manual  svn://svn.vop.com/api/manual/VOP/Process
  * version 1.0.0
  * User    duanchi <http://weibo.com/shijingye>
  * Date    2013-10-29
@@ -11,7 +11,7 @@
 
 namespace Api;
 /**
- * Class Api
+ * Class Process
  * @package VOP
  */
 class Api {

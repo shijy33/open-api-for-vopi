@@ -9,12 +9,12 @@
  * Time    15:36
  */
 
-namespace Api;
+namespace Process;
 /**
  * Class Authorize
  * @package Process
  */
-class Authorize {
+class AuthorizeModel {
 	
 	/**
 	 * Function authenticate

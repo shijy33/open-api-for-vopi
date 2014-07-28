@@ -1,6 +1,6 @@
 <?php
 /**
- * File    application\plugin\Process.php
+ * File    application\plugin\Api.php
  * Desc    请求预处理插件模块
  * Manual  svn://svn.vop.com/api/manual/plugin/Process
  * version 1.0.0
@@ -20,7 +20,7 @@ class AuthorizePlugin extends Yaf\Plugin_Abstract {
 		if ($request->controller == 'Api') {
 			//AUTHENTICATE START -->
 			//应用认证,appkey,appsecret,ip,count from authorize_config.ini
-			$_APP = \Api\Authorize::authenticate(
+			$_APP = \Process\AuthorizeModel::authenticate(
 				(isset($request->getParams()['_token']) ? $request->getParams()['_token'] : NULL),
 				$_SERVER['REMOTE_ADDR']
 			);
@@ -29,7 +29,7 @@ class AuthorizePlugin extends Yaf\Plugin_Abstract {
 			\Yaf\Registry::set('_APP', $_APP);
 			//AUTHENTICATE END <--
 
-			\Yaf\Registry::set('_REQUEST', \Api\Process\Request::pretreatment($_GET, file_get_contents('php://input'), $request->method, $request->getParams()));
+			//\Yaf\Registry::set('_REQUEST', \Api\Process\Request::pretreatment($_GET, file_get_contents('php://input'), $request->method, $request->getParams()));
 		}
 
 		//PRETREATMENT REQUEST END <--
@@ -57,6 +57,5 @@ class AuthorizePlugin extends Yaf\Plugin_Abstract {
 	}
 
 	function __destruct() {
-		//\LOG::record();
 	}
 } 

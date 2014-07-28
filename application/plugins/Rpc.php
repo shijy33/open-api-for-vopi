@@ -1,6 +1,6 @@
 <?php
 /**
- * File    application\plugin\Process.php
+ * File    application\plugin\Api.php
  * Desc    请求预处理插件模块
  * Manual  svn://svn.vop.com/api/manual/plugin/Process
  * version 1.0.0
@@ -17,7 +17,7 @@ class RpcPlugin extends Yaf\Plugin_Abstract {
 	public function routerShutdown(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
 
 		//RPC INIT START -->
-		if ($request->controller == 'Api' || $request->controller == 'Test') {
+		if ($request->controller == 'Process' || $request->controller == 'Test') {
 			\Core\Rpc::initialize();
 		}
 

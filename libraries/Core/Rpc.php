@@ -10,27 +10,27 @@ namespace Core;
 
 
 class Rpc {
-	protected static $_driver_client    = 'Yar';
-	protected static $_driver_server     = 'Yar';
+	protected static $_engine_client    = 'Yar';
+	protected static $_engine_server     = 'Yar';
 
 	private static $__client_instance   = [];
 	private static $__server_instance   = [];
 
 	public static function initialize() {
-		$_config = get_config('rpc');
+		$_config = get_config('application.rpc');
 
-		self::$_driver_client = $_config->get('driver')->client;
-		self::$_driver_server = $_config->get('driver')->server;
+		self::$_engine_client = $_config->get('engine')->client;
+		self::$_engine_server = $_config->get('engine')->server;
 
 
 	}
 
-	public static function add_client($_server_uri, $_options = [], $_client_driver = NULL) {
+	public static function add_client($_server_uri, $_options = [], $_client_engine = NULL) {
 		$_result = FALSE;
 		$_client_flag = mk_rand_str(8);
-		$_client_driver == NULL ? $_client_driver = self::$_driver_client : FALSE;
+		$_client_engine == NULL ? $_client_engine = self::$_engine_client : FALSE;
 
-		$_class = '\Core\Rpc\\'. $_client_driver . '\Client';
+		$_class = '\Core\Rpc\\'. $_client_engine . '\Client';
 		self::$__client_instance[$_client_flag] = new $_class($_server_uri, $_options);
 
 		if (is_object(self::$__client_instance[$_client_flag])) $_result = $_client_flag;
@@ -47,10 +47,10 @@ class Rpc {
 		return $_result;
 	}
 
-	public static function add_server($object, $_server_flag = NULL, $_server_driver = NULL) {
+	public static function add_server($object, $_server_flag = NULL, $_server_engine = NULL) {
 		$_result = FALSE;
 		$_has_instance = FALSE;
-		$_server_driver == NULL ? $_server_driver = self::$_driver_server : FALSE;
+		$_server_engine == NULL ? $_server_engine = self::$_engine_server : FALSE;
 
 		if ($_server_flag == NULL) {
 			$_server_flag = mk_rand_str(8);
@@ -59,7 +59,7 @@ class Rpc {
 		}
 
 		if ($_has_instance == FALSE) {
-			$_class = '\Core\Rpc\\'. $_server_driver . '\Server';
+			$_class = '\Core\Rpc\\'. $_server_engine . '\Server';
 			self::$__server_instance[$_server_flag] = new $_class($object);
 			$_result = $_server_flag;
 		}
