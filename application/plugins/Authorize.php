@@ -29,7 +29,7 @@ class AuthorizePlugin extends Yaf\Plugin_Abstract {
 			\Yaf\Registry::set('_APP', $_APP);
 			//AUTHENTICATE END <--
 
-			//\Yaf\Registry::set('_REQUEST', \Api\Process\Request::pretreatment($_GET, file_get_contents('php://input'), $request->method, $request->getParams()));
+			\Yaf\Registry::set('_REQUEST', \Api\Process\Request::pretreatment($_GET, file_get_contents('php://input'), $request->method, $request->getParams()));
 		}
 
 		//PRETREATMENT REQUEST END <--

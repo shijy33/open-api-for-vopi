@@ -28,7 +28,7 @@ class ApiController extends Yaf\Controller_Abstract {
 
 		//AUTHORIZE START -->
 		//授权, with service, method, token
-		if ($_APP != FALSE && \Api\Authorize::authorize(
+		if ($_APP != FALSE && \Process\AuthorizeModel::authorize(
 			$_REQUEST['api']['service'],
 			$_REQUEST['api']['method'],
 			$_APP['role']
@@ -43,7 +43,7 @@ class ApiController extends Yaf\Controller_Abstract {
 		//API ROUTER START -->
 		//路由到对应api from api_config_devel.ini
 
-		$_API = \Api\Api::get($_REQUEST['api']['service'], $_REQUEST['api']['method'], $_REQUEST['api']['http_method']);
+		$_API = \Process\ApiModel::get($_REQUEST['api']['service'], $_REQUEST['api']['method'], $_REQUEST['api']['http_method']);
 
 		if ($_API == FALSE || empty($_API)) {
 			throw new \Exception('API_ROUTE_ERROR');
@@ -53,13 +53,13 @@ class ApiController extends Yaf\Controller_Abstract {
 
 		//API PROCESS START -->
 
-		$_RESULT = \Api\Api::process($_API, $_REQUEST);
+		$_RESULT = \Process\ApiModel::process($_API, $_REQUEST);
 
 		//API PROCESS END <--
 
 		//RESULT PACKAGE START -->
 		//接口返回内容封装
-		$_RETURN_PACKAGE = \Api\Api::package($_RESULT);
+		$_RETURN_PACKAGE = \Process\ApiModel::package($_RESULT);
 		//RESULT PACKAGE END <--
 
 		//RETURN RESULT START -->

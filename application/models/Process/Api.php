@@ -34,8 +34,8 @@ class ApiModel {
 	public static function process($_api, $_parameters = []) {
 		$_result = FALSE;
 
-		$_process_handle = new $_api['proc_model']();
-		$_result = $_process_handle->$_api['proc_method']($_parameters, $_api);
+		\Core\Rpc::add_client($_api['rpc_uri']);
+		$_result = \Core\Rpc::call()->$_api['proc_method']($_parameters, $_api);
 
 		return $_result;
 	}

@@ -21,7 +21,7 @@ class ErrorController extends Yaf\Controller_Abstract {
 		$_message = explode('|', $exception->getMessage(), 2);
 
 		var_dump($exception);
-		$_error = \Api\MessageCode::get($_message[0]);
+		//$_error = \Api\MessageCode::get($_message[0]);
 
 		if (empty($_error[0]) || $_error == FALSE){
 			$_error = [
@@ -35,7 +35,7 @@ class ErrorController extends Yaf\Controller_Abstract {
 
 		fastcgi_finish_request();
 
-		\LOG::set('response',"\n".json_encode(package_error($_error), JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE));
+		//\LOG::set('response',"\n".json_encode(package_error($_error), JSON_PRETTY_PRINT + JSON_UNESCAPED_UNICODE));
 
 		$_MVNO = \Yaf\Registry::get('_MVNO');
 		$_SERIAL = \Yaf\Registry::get('_SERIAL');
