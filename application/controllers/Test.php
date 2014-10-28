@@ -18,7 +18,6 @@
 class TestController extends Yaf\Controller_Abstract {
 	
 	public function indexAction($_action = NULL) {
-		$_action .= 'Action';
 		return $this->$_action();
 	}
 
@@ -77,15 +76,8 @@ class TestController extends Yaf\Controller_Abstract {
 		return FALSE;
 	}
 
-}
-
-class TestServer {
-	public function RegisterAccount($_sPhoneNumber, $_sImsi, $_sIccid, $_sUserProperty, $_sService, $_sName, $_sAddress, $_sCertTypeCode, $_sCertCode) {
-
-		return [
-			'status'    =>  TRUE,
-			'code'      =>  200,
-		];
-
-	}
+    public function constant() {
+        \Core\STATUS::APP_NOT_DEFINED('700.1.1');
+        return FALSE;
+    }
 }

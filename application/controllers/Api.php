@@ -17,59 +17,27 @@
  */
 class ApiController extends Yaf\Controller_Abstract {
 	
-	public function indexAction($_service = NULL, $_method = NULL, $_token = 'NO_TOKEN', $_datatype = DATA_TYPE_JSON) {
+	public function indexAction($_service = NULL, $_method = NULL, $_resource = NULL) {
 
-		$_REQUEST           = \Yaf\Registry::get('_REQUEST');
-		$_APP              = \Yaf\Registry::get('_APP');
-		$_API               = FALSE;
-		$_API_PARAMETERS    = NULL;
-		$_RESULT            = FALSE;
-		$_RETURN_PACKEGE    = NULL;
+        if (\Core\KEY::get('_IS_AUTHORIZED')) {
 
-		//AUTHORIZE START -->
-		//授权, with service, method, token
-		if ($_APP != FALSE && \Process\AuthorizeModel::authorize(
-			$_REQUEST['api']['service'],
-			$_REQUEST['api']['method'],
-			$_APP['role']
-		)) {
-			//授权成功
-		} else {
-			throw new \Exception('PERMISSION_DENIED');
-		}
-		//AUTHORIZE END <--
+            $_REQUEST           = \Core\KEY::get('_REQUEST');
+            $_APP               = \Core\KEY::get('_APP');
+            $_API               = \Core\KEY::get('_API');;
+            $_RESULT            = FALSE;
+            $_RETURN_PACKEGE    = NULL;
 
 
-		//API ROUTER START -->
-		//路由到对应api from api_config_devel.ini
+            //API PROCESS START -->
+            $_RESULT = \Process\ApiModel::process($_API, $_REQUEST);
+            //API PROCESS END <--
 
-		$_API = \Process\ApiModel::get($_REQUEST['api']['service'], $_REQUEST['api']['method'], $_REQUEST['api']['http_method']);
+            //RESULT PACKAGE START -->
+            //接口返回内容封装
+            \Core\KEY::set('_RESPONSE', \Process\ApiModel::package($_RESULT));
+            //RESULT PACKAGE END <--
 
-		if ($_API == FALSE || empty($_API)) {
-			throw new \Exception('API_ROUTE_ERROR');
-		}
-		//API ROUTER END <--
-
-
-		//API PROCESS START -->
-
-		$_RESULT = \Process\ApiModel::process($_API, $_REQUEST);
-
-		//API PROCESS END <--
-
-		//RESULT PACKAGE START -->
-		//接口返回内容封装
-		$_RETURN_PACKAGE = \Process\ApiModel::package($_RESULT);
-		//RESULT PACKAGE END <--
-
-		//RETURN RESULT START -->
-		return_package($_RETURN_PACKAGE, $_REQUEST['method']['return_type'], $_REQUEST['method']['callback']);
-		//RESULT PACKAGE END <--
-
-		fastcgi_finish_request();
-
-		//记录联调情况 -->
-		//通过FASTCGI_FINISH_REQUEST 可以确认已经调用成功并且返回成功状态
+        }
 
 		return FALSE;
 	}

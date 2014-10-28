@@ -11,132 +11,113 @@
 
 namespace Process;
 
+
 class RequestModel {
 
-	/**
-	 * Function pretreatment
-	 * @param $_get
-	 * @param $_post
-	 * @param $_version
-	 * @param $_scope
-	 * @param $_interface
-	 * @return array
-	 */
-	public static function pretreatment($_get = NULL, $_post = NULL, $_http_method = 'GET', $_mvc_params = NULL) {
-		$_result = FALSE;
+    /**
+     * Function pretreatment
+     * @param $_get
+     * @param $_post
+     * @param $_version
+     * @param $_scope
+     * @param $_interface
+     * @return array
+     */
+    public static function get($_http_method, $_mvc_parameters) {
+        $_request = [
+            'method'        => HTTP_GET,
+            'url'           => [],
+            'api'           => [
+                'service'       => '',
+                'method'        => '',
+                'resource'      => '',
+            ],
+            'content-type'  => TYPE_JSON,
+            'version'       => REQUEST_VERSION_NULL,
+            'ranges'        => [
+                'columns'       => NULL,
+                'order'         => NULL,
+                'limit'         => NULL,
+            ],
 
-		if ($_mvc_params == NULL) {
-			$_mvc_params = [
-				'_service'      =>  NULL,
-				'_method'       =>  NULL,
-				'_datatype'     =>  DATA_TYPE_JSON
-			];
-		} else {
-			switch($_mvc_params['_datatype']) {
-				case 'jsonp' :
-					$_mvc_params['_datatype'] = DATA_TYPE_JSONP;
-					break;
+            'access-token'  => NULL,
+            'client-token'  => NULL,
+            'client-id'     => NULL,
+            'client-ip'     => NULL,
 
-				case 'msgpack' :
-					$_mvc_params['_datatype'] = DATA_TYPE_MSGPACK;
-					break;
+            'content'       => [],
+        ];
 
-				case 'json' :
-				default:
-					$_mvc_params['_datatype'] = DATA_TYPE_JSON;
-					break;
-			}
+        //MAKE URL REQUEST
+        $_request['method']         = constant('HTTP_'.$_http_method);
 
-		}
+        $_request['url']            = $_SERVER['REQUEST_URI'];
 
-		$_system = [];
+        isset($_mvc_parameters['_service'])  && !empty($_mvc_parameters['_service'])  ? $_request['api']['service']  = $_mvc_parameters['_service']  : FALSE;
+        isset($_mvc_parameters['_method'])   && !empty($_mvc_parameters['_method'])   ? $_request['api']['method']   = $_mvc_parameters['_method']   : FALSE;
+        isset($_mvc_parameters['_resource']) && !empty($_mvc_parameters['_resource']) ? $_request['api']['resource'] = $_mvc_parameters['_resource'] : FALSE;
 
+        //MAKE HTTP HEADER REQUEST
+        $_tmp_header_request            = [];
+        $_tmp_http_accept               = explode(';', str_replace(' ', '', strtolower($_SERVER['HTTP_ACCEPT'])));
 
-		//IF $_POST -->
-		$_post = $_POST;
-		//$_POST END <--
+        $_request['content-type']   = (($_tmp_http_accept[0] == TYPE_JSON) || ($_tmp_http_accept[0] == TYPE_MSGPACK) ? $_tmp_http_accept[0] : TYPE_NULL);
 
-		$_result = [
-			'authorize'	    =>	[
-				'appkey'       =>  NULL,
-				'token'         =>	NULL,
-				'ip'            =>	$_SERVER['REMOTE_ADDR'],
-			],
-			'api'	        =>	[
-				'service'       =>  $_mvc_params['_service'],
-				'method'        =>	$_mvc_params['_method'],
-				'http_method'   =>  $_http_method,
-				'datatype'      =>  $_mvc_params['_datatype']
-			],
-			'method'	    =>	[
-				'request_method'=>	constant('HTTP_' . $_SERVER['REQUEST_METHOD']),
-				'return_type'   =>  $_mvc_params['_datatype'],
-				'callback'   =>  isset($_get['callback']) ? $_get['callback'] : NULL,
-			],
-			'parameters'	=>	[
-				'system'        =>  $_system,
-				'post'	        =>	$_post,
-				'get'	        =>	$_get,
-			],
-			'system'        =>  $_system,
-		];
+        if (isset($_tmp_http_accept[1]) && !empty($_tmp_http_accept[1])) {
+            $_tmp = explode('=', $_tmp_http_accept[1]);
+            isset($_tmp[1]) && !empty($_tmp[1]) ? $_request['version'] = $_tmp[1] : FALSE;
+        }
 
-		//GET TOKEN -->
-		//token 由 mvc控制器中获取
-		$_result['authorize']['token'] = (isset($_mvc_params['_token']) ? $_mvc_params['_token'] : NULL);
-		//GET TOKEN END <--
-
-		//CHECK PARAMETERS -->
-
-		//[appkey] START -->
-
-		$_result['authorize']['appkey'] = \Yaf\Registry::get('_APP')['appkey'];
-		//[appkey] END <--
-
-		//[token]
+        //@todo Ranges
 
 
-		if ($_result['method']['request_method'] == HTTP_POST){
+        isset($_SERVER['HTTP_ACCESS_TOKEN']) ? $_request['access-token'] = $_SERVER['HTTP_ACCESS_TOKEN'] : FALSE;
 
-		//[service] START -->
-			if (($_result['api']['service'] == $_result['parameters']['get']['service']) && self::check_service($_result['api']['service'], 'service'));
-			else {
-				throw new \Exception('INVALID_SERVICE');
-			}
-		//[service] END <--
+        isset($_SERVER['HTTP_CLIENT_TOKEN']) ? $_request['client-token'] = $_SERVER['HTTP_CLIENT_TOKEN'] : FALSE;
 
-		//[method] START -->
-			if (($_result['api']['method'] == $_result['parameters']['get']['method']) && self::check_service($_result['api']['method'], 'method'));
-			else {
-				throw new \Exception('INVALID_METHOD');
-			}
-		//[method] END <--
-		}
+        isset($_SERVER['HTTP_CLIENT_ID'])    ? $_request['client-id']    = $_SERVER['HTTP_CLIENT_ID']    : FALSE;
 
-		//CHECK PARAMETERS END <--
+        isset($_SERVER['REMOTE_ADDR'])       ? $_request['client-ip']    = $_SERVER['REMOTE_ADDR']       : FALSE;
 
-		return $_result;
-	}
+        //MAKE CONTENT REQUEST
+        $_request['content'] = file_get_contents('php://input');
+        switch ($_request['content-type']) {
+            case TYPE_MSGPACK :
+                $_request['content'] = msgpack_unpack($_request['content']);
+                break;
 
-	private static function check_service($_name, $_type = 'service') {
-		$_result = FALSE;
-		$_conf = \Yaf\Registry::get('service');
-		switch($_type) {
+            case TYPE_JSON :
+                $_request['content'] = json_decode($_request['content']);
+                break;
 
-			case 'method':
-				if (isset($_conf['method'][$_name]) && ($_conf['method'][$_name] == '1')) {
-					$_result = TRUE;
-				}
-				break;
+            case TYPE_NULL :
+            default :
+                $_request['content'] = NULL;
+                break;
+        }
 
-			case 'service':
-			default:
-			if (isset($_conf['service'][$_name]) && ($_conf['service'][$_name] == '1')) {
-				$_result = TRUE;
-			}
-				break;
-		}
+        return $_request;
+    }
 
-		return $_result;
-	}
+    private static function check_service($_name, $_type = 'service') {
+        $_result = FALSE;
+        $_conf = \Yaf\Registry::get('service');
+        switch($_type) {
+
+            case 'method':
+                if (isset($_conf['method'][$_name]) && ($_conf['method'][$_name] == '1')) {
+                    $_result = TRUE;
+                }
+                break;
+
+            case 'service':
+            default:
+                if (isset($_conf['service'][$_name]) && ($_conf['service'][$_name] == '1')) {
+                    $_result = TRUE;
+                }
+                break;
+        }
+
+        return $_result;
+    }
 }

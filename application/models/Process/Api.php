@@ -9,15 +9,15 @@ class ApiModel {
 	 * @param string $_interface
 	 * @return Ambigous <Array api_struct, boolean false>
 	 */
-	public static function get($_service = NULL, $_method = NULL, $_http_method = 'GET') {
+	public static function get($_service = NULL, $_method = NULL, $_http_method = HTTP_GET) {
 		$_result = FALSE;
 
 		if ($_service != NULL && $_method != NULL) {
 			$_result = parse_config(API_CONF_FILE_PATH);
 		}
 
-		if ($_result != NULL && isset($_result[$_service.'/'.$_method.'?'.$_http_method])) {
-			$_result = $_result[$_service.'/'.$_method.'?'.$_http_method];
+		if ($_result != NULL && isset($_result[$_service.'/'.$_method.':'.$_http_method])) {
+			$_result = $_result[$_service.'/'.$_method.':'.$_http_method];
 		} else {
 			$_result = FALSE;
 		}
@@ -32,12 +32,17 @@ class ApiModel {
 	 * @return bool
 	 */
 	public static function process($_api, $_parameters = []) {
-		$_result = FALSE;
 
-		\Core\Rpc::add_client($_api['rpc_uri']);
-		$_result = \Core\Rpc::call()->$_api['proc_method']($_parameters, $_api);
+        /*$_proc_handle = Wekit::load('cms.WtCms');
 
-		return $_result;
+        \Devel\Timespent::record('LOAD-CLASS');
+        $_result = $_proc_handle->getCms(4);
+        var_dump($_result);*/
+
+        /*\Core\Rpc::add_client($_api['rpc_uri']);
+        $_result = \Core\Rpc::call()->$_api['proc_method']($_parameters, $_api);*/
+
+		return \Wekit::load($_api['proc_class'])->{$_api['proc_method']}($_parameters);
 	}
 
 	/**
@@ -103,11 +108,6 @@ class ApiModel {
 	}
 
 	public static function package($_data = NULL) {
-
-
-		return $_result =
-			[
-				'data'  => $_data,
-			];
+		return $_data;
 	}
 }

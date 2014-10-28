@@ -28,43 +28,14 @@ class ConstPlugin extends Yaf\Plugin_Abstract {
 		define(     'SERVICE_CONF_FILE_PATH', $_conf->service_conf_file_path     );
 
 		//parse status code config
-		$_conf = get_yaf_config('message_code/message_code_config.ini');
-		\Yaf\Registry::set('service',$_conf);
+		//$_conf = get_yaf_config('status_code/message_code_config.ini');
+		//\Yaf\Registry::set('service',$_conf);
 
 		//parse other
 		$_conf = \Yaf\Registry::get('config')->get('application')->get('api');
 		$this->_app_define($_conf);
 
 		unset($_conf);
-	}
-
-	public function routerStartup(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
-	}
-
-	public function routerShutdown(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
-	}
-
-	public function dispatchLoopStartup(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
-
-	}
-
-	public function preDispatch(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
-
-	}
-
-	public function postDispatch(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
-
-	}
-
-	public function dispatchLoopShutdown(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
-
-	}
-
-	public function preResponse(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response) {
-
-	}
-
-	function __destruct() {
 	}
 
 	private function _app_define($_array = []) {
