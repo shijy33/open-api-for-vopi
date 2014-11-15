@@ -80,4 +80,33 @@ class TestController extends Yaf\Controller_Abstract {
         \Core\STATUS::APP_NOT_DEFINED('700.1.1');
         return FALSE;
     }
+
+    public function key() {
+        $a =  null;
+        $start = $this->get_microtime();
+        for ($i = 0; $i<1000; $i++) {
+            \Core\KEY::set('test', $i, KEY_STATIC);
+            $a = \Core\KEY::get('test', KEY_STATIC);
+        }
+        $end = $this->get_microtime();
+
+        var_dump($end - $start);
+
+        $start = $this->get_microtime();
+        for ($i = 0; $i<1000; $i++) {
+            \Yaf\Registry::set('test', $i);
+            $a = \Yaf\Registry::get('test');
+        }
+        $end = $this->get_microtime();
+
+        var_dump(microtime());
+        var_dump($end - $start);
+        return FALSE;
+    }
+
+    private function get_microtime()
+    {
+        list($usec, $sec) = explode(' ', microtime());
+        return ((float)$usec + (float)$sec);
+    }
 }

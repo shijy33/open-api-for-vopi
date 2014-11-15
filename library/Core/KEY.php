@@ -9,7 +9,7 @@
 namespace Core;
 
 define('KEY_REGISTRY', 1);
-define('KEY_STATIC'  , 2);
+define('KEY_STATIC',   2);
 define('KEY_CACHE',    4);
 define('KEY_MEMORY',   8);
 define('KEY_STORAGE', 16);
@@ -20,11 +20,11 @@ define('REGISTRY_KEY_PREFIX'    , 'KEY_');
 
 class KEY {
 
-    static private $_static_handle    = [];
-    static private $_registry_handle  = [];
-    static private $_cache_handle     = [];
+    private static $_static_handle    = [];
+    private static $_registry_handle  = [];
+    private static $_cache_handle     = [];
 
-    static function get($_key, $_scope = KEY_REGISTRY, $_prefix = DEFAULT_PREFIX) {
+    public static function get($_key, $_scope = KEY_REGISTRY, $_prefix = DEFAULT_PREFIX) {
 
         $_result = FALSE;
         $_handle = self::_instance($_scope, $_prefix);
@@ -56,7 +56,7 @@ class KEY {
         return $_result;
     }
 
-    static function set($_key, $_value, $_scope = KEY_REGISTRY, $_prefix = DEFAULT_PREFIX) {
+    public static function set($_key, $_value, $_scope = KEY_REGISTRY, $_prefix = DEFAULT_PREFIX) {
 
         $_result = FALSE;
         $_handle = self::_instance($_scope, $_prefix);
@@ -88,7 +88,7 @@ class KEY {
         return $_result;
     }
 
-    static private function _instance($_scope, $_prefix = DEFAULT_PREFIX) {
+    private static function _instance($_scope, $_prefix = DEFAULT_PREFIX) {
         switch($_scope) {
             case KEY_STORAGE:
 
@@ -109,7 +109,7 @@ class KEY {
 
             case KEY_STATIC:
 
-                if (!isset(self::$_staitc_handle[$_prefix])) {
+                if (!isset(self::$_static_handle[$_prefix])) {
                     self::$_static_handle[$_prefix] = [];
                 }
 

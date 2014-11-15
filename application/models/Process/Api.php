@@ -32,17 +32,7 @@ class ApiModel {
 	 * @return bool
 	 */
 	public static function process($_api, $_parameters = []) {
-
-        /*$_proc_handle = Wekit::load('cms.WtCms');
-
-        \Devel\Timespent::record('LOAD-CLASS');
-        $_result = $_proc_handle->getCms(4);
-        var_dump($_result);*/
-
-        /*\Core\Rpc::add_client($_api['rpc_uri']);
-        $_result = \Core\Rpc::call()->$_api['proc_method']($_parameters, $_api);*/
-
-		return \Wekit::load($_api['proc_class'])->{$_api['proc_method']}($_parameters);
+		return \Core\Rpc::call()->$_api['proc_method']($_parameters, $_api);
 	}
 
 	/**
@@ -53,9 +43,6 @@ class ApiModel {
 	 */
 	public static function parse_parameters($_param_conf, $_parameters) {
 		$_result = FALSE;
-
-
-		//$_result = ($_param_conf == HTTP_GET ? $_parameters['get'] : $_parameters['post']);
 
 		if (!empty($_param_conf)) {
 			$_param_conf = explode(';', $_param_conf);

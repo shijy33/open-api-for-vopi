@@ -24,12 +24,12 @@ class Bootstrap extends Yaf\Bootstrap_Abstract{
     }
 
     public function _initMemorySet(Yaf\Dispatcher $dispatcher) {
-        //初始化常量
-        Yaf\Registry::set('_REQUEST',   NULL);
-        Yaf\Registry::set('_APP',       FALSE);
-        Yaf\Registry::set('_API',       FALSE);
-        Yaf\Registry::set('_RESULT',    NULL);
-        //初始化其他内容
+        //初始化预定于变量
+        \Core\KEY::set(      '_REQUEST', NULL );
+        \Core\KEY::set('_IS_AUTHORIZED', FALSE);
+        \Core\KEY::set(          '_APP', FALSE);
+        \Core\KEY::set(          '_API', FALSE);
+        \Core\KEY::set(       '_RESULT', NULL );
     }
 
     public function _initPlugin(Yaf\Dispatcher $dispatcher) {
@@ -42,6 +42,7 @@ class Bootstrap extends Yaf\Bootstrap_Abstract{
     }
 
     public function _initHooks(Yaf\Dispatcher $dispatcher) {
+        //注册Hooks
         $dispatcher->registerPlugin(new \Hook\RequestPlugin());
         $dispatcher->registerPlugin(new \Hook\AuthenticatePlugin());
         $dispatcher->registerPlugin(new \Hook\AuthorizePlugin());
